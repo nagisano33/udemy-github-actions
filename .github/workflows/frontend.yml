@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'frontend/**'
+      - '.github/**'
 
 defaults:
   run:
@@ -24,5 +27,5 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::416528674986:role/udemy-github-actions-frontend-deployment-role
           aws-region: ap-northeast-1
-          
+
       - run: aws s3 sync . s3://udemy-github-actions-nagisano33 --exact-timestamps --region ap-northeast-1
