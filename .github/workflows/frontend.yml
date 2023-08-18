@@ -9,13 +9,20 @@ defaults:
   run:
     working-directory: frontend
 
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
 jobs:
   deploy:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::416528674986:role/udemy-github-actions-frontend-deployment-role
+          aws-region: ap-northeast-1
+          
       - run: aws s3 sync . s3://udemy-github-actions-nagisano33 --exact-timestamps --region ap-northeast-1
-        env:
-          AWS_ACCESS_KEY_ID: ${{secrets.FRONTEND_AWS_ACESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.FRONTEND_AWS_SECRET_ACCESS_KEY}}
